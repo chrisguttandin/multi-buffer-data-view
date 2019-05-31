@@ -4,7 +4,7 @@
 
 [![tests](https://img.shields.io/travis/chrisguttandin/multi-buffer-data-view/master.svg?style=flat-square)](https://travis-ci.org/chrisguttandin/multi-buffer-data-view)
 [![dependencies](https://img.shields.io/david/chrisguttandin/multi-buffer-data-view.svg?style=flat-square)](https://www.npmjs.com/package/multi-buffer-data-view)
-[![version](https://img.shields.io/npm/v/multi-buffer-data-view.svg?style=flat-square)](https://www.npmjs.com/package/multi-buffer-data-view) [![Greenkeeper badge](https://badges.greenkeeper.io/chrisguttandin/multi-buffer-data-view.svg)](https://greenkeeper.io/)
+[![version](https://img.shields.io/npm/v/multi-buffer-data-view.svg?style=flat-square)](https://www.npmjs.com/package/multi-buffer-data-view)
 
 This module provides a wrapper around the native DataView. But instead of supporting only one ArrayBuffer as the backing memory the `MultiBufferDataView` exported by this module can operate across multiple ArrayBuffers.
 
