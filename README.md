@@ -25,16 +25,16 @@ import { MultiBufferDataView } from 'multi-buffer-data-view';
 A `MultiBufferDataView` behaves almost like a native DataView with the notable exception that it can handle multiple ArrayBuffers.
 
 ```js
-const aArrayBuffer = new ArrayBuffer(23);
+const anArrayBuffer = new ArrayBuffer(23);
 const anotherArrayBuffer = new ArrayBuffer(41);
 
-new MultiBufferDataView([ aArrayBuffer, anotherArrayBuffer ]);
+new MultiBufferDataView([ anArrayBuffer, anotherArrayBuffer ]);
 ```
 
 The little example above will create a `MultiBufferDataView` which uses all 64 bytes that are available in the given ArrayBuffers. However it is also possible to limit the range of accessible bytes by providing a `byteOffset` or a `byteLength` as additional arguments.
 
 ```js
-new MultiBufferDataView([ aArrayBuffer, anotherArrayBuffer ], 12, 24);
+new MultiBufferDataView([ anArrayBuffer, anotherArrayBuffer ], 12, 24);
 ```
 
 When creating a `MultiBufferDataView` with the parameters above it will only use the last 11 bytes of the first ArrayBuffer and the first 13 bytes of the second ArrayBuffer.
