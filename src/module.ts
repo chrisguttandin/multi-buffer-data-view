@@ -94,7 +94,23 @@ export class MutliBufferDataView {
         return (this.getUint8(byteOffset) << 8) + this.getUint8(byteOffset + 1); // tslint:disable-line:no-bitwise
     }
 
-    // @todo public getUint32 (byteOffset: number, littleEndian?: boolean): number;
+    public getUint32 (byteOffset: number, littleEndian?: boolean): number {
+        const value = (littleEndian === true)
+            ? (this.getUint8(byteOffset)
+                + (this.getUint8(byteOffset + 1) << 8) // tslint:disable-line:no-bitwise
+                + (this.getUint8(byteOffset + 2) << 16) // tslint:disable-line:no-bitwise
+                + (this.getUint8(byteOffset + 3) << 24)) // tslint:disable-line:no-bitwise
+            : ((this.getUint8(byteOffset) << 24) // tslint:disable-line:no-bitwise
+                + (this.getUint8(byteOffset + 1) << 16) // tslint:disable-line:no-bitwise
+                + (this.getUint8(byteOffset + 2) << 8) // tslint:disable-line:no-bitwise
+                + this.getUint8(byteOffset + 3));
+
+        if (value < 0) {
+            return value + (2 ** 32);
+        }
+
+        return value;
+    }
 
     public getUint8 (byteOffset: number): number {
         const [ dataView, byteOffsetOfDataView ] = this._findDataViewWithOffset(byteOffset);
