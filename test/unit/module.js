@@ -558,6 +558,68 @@ describe('multi-buffer-data-view', () => {
 
         });
 
+        describe('setFloat32()', () => {
+
+            let buffers;
+            let mutliBufferDataView;
+            let values;
+
+            beforeEach(() => {
+                buffers = [ new ArrayBuffer(5), new ArrayBuffer(75) ];
+                mutliBufferDataView = new MutliBufferDataView(buffers);
+                values = new Float32Array(Array.from({ length: 20 }, () => ((Math.random() * 10) - 5)));
+            });
+
+            describe('without any littleEndian flag', () => {
+
+                it('should write the same values as if using a DataView', () => {
+                    for (let i = 0; i < 20; i += 1) {
+                        mutliBufferDataView.setFloat32(i * 4, values[i]);
+                    }
+
+                    const dataView = combineArrayBuffers(buffers);
+
+                    for (let i = 0; i < 20; i += 1) {
+                        expect(dataView.getFloat32(i * 4)).to.equal(values[i]);
+                    }
+                });
+
+            });
+
+            describe('with the littleEndian flag set to true', () => {
+
+                it('should write the same values as if using a DataView', () => {
+                    for (let i = 0; i < 20; i += 1) {
+                        mutliBufferDataView.setFloat32(i * 4, values[i], true);
+                    }
+
+                    const dataView = combineArrayBuffers(buffers);
+
+                    for (let i = 0; i < 20; i += 1) {
+                        expect(dataView.getFloat32(i * 4, true)).to.equal(values[i]);
+                    }
+                });
+
+            });
+
+            describe('with the littleEndian flag set to false', () => {
+
+                it('should write the same values as if using a DataView', () => {
+                    for (let i = 0; i < 20; i += 1) {
+                        mutliBufferDataView.setFloat32(i * 4, values[i], false);
+                    }
+
+                    const dataView = combineArrayBuffers(buffers);
+
+                    for (let i = 0; i < 20; i += 1) {
+                        expect(dataView.getFloat32(i * 4, false)).to.equal(values[i]);
+                    }
+                });
+
+            });
+
+        });
+
         describe('setInt16()', () => {
 
             let buffers;
