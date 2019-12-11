@@ -71,7 +71,14 @@ export class MutliBufferDataView {
         return this._byteOffset;
     }
 
-    // @todo public getFloat32 (byteOffset: number, littleEndian?: boolean): number;
+    public getFloat32 (byteOffset: number, littleEndian?: boolean): number {
+        this._internalBuffer.setUint8(0, this.getUint8(byteOffset + 0));
+        this._internalBuffer.setUint8(1, this.getUint8(byteOffset + 1));
+        this._internalBuffer.setUint8(2, this.getUint8(byteOffset + 2));
+        this._internalBuffer.setUint8(3, this.getUint8(byteOffset + 3));
+
+        return this._internalBuffer.getFloat32(0, littleEndian);
+    }
 
     // @todo public getFloat64 (byteOffset: number, littleEndian?: boolean): number;
 
