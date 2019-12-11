@@ -1,4 +1,4 @@
-export class MutliBufferDataView implements Omit<DataView, 'buffer'> {
+export class MultiBufferDataView implements Omit<DataView, 'buffer'> {
 
     private _buffers: ArrayBuffer[];
 
