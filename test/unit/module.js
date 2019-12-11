@@ -231,7 +231,7 @@ describe('multi-buffer-data-view', () => {
             let mutliBufferDataView;
 
             beforeEach(() => {
-                const int16Array = new Uint16Array(Array.from({ length: 20 }, () => Math.floor(Math.random() * (2 ** 16)) - (2 ** 15)));
+                const int16Array = new Int16Array(Array.from({ length: 20 }, () => Math.floor(Math.random() * (2 ** 16)) - (2 ** 15)));
 
                 buffers = [ int16Array.buffer.slice(0, 5), int16Array.buffer.slice(5) ];
                 dataView = new DataView(int16Array.buffer);
