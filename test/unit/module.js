@@ -275,6 +275,82 @@ describe('multi-buffer-data-view', () => {
 
         });
 
+        describe('getFloat64()', () => {
+
+            let buffers;
+            let dataView;
+            let mutliBufferDataView;
+
+            beforeEach(() => {
+                const float64Array = new Float64Array(Array.from({ length: 20 }, () => ((Math.random() * 10) - 5)));
+
+                buffers = [ float64Array.buffer.slice(0, 5), float64Array.buffer.slice(5) ];
+                dataView = new DataView(float64Array.buffer);
+                mutliBufferDataView = new MutliBufferDataView(buffers);
+            });
+
+            describe('without any littleEndian flag', () => {
+
+                it('should return the same values as a DataView', () => {
+                    for (let i = 0; i < 153; i += 1) {
+                        const value = mutliBufferDataView.getFloat64(i);
+
+                        if (Number.isNaN(value)) {
+                            expect(dataView.getFloat64(i)).to.be.NaN;
+                        } else {
+                            expect(value).to.equal(dataView.getFloat64(i));
+                        }
+                    }
+                });
+
+                it('should throw a RangeError when the byteOffset would require to read unavailable bytes', () => {
+                    expect(() => mutliBufferDataView.getFloat64(153)).to.throw(RangeError);
+                });
+
+            });
+
+            describe('with the littleEndian flag set to true', () => {
+
+                it('should return the same values as a DataView', () => {
+                    for (let i = 0; i < 153; i += 1) {
+                        const value = mutliBufferDataView.getFloat64(i, true);
+
+                        if (Number.isNaN(value)) {
+                            expect(dataView.getFloat64(i, true)).to.be.NaN;
+                        } else {
+                            expect(value).to.equal(dataView.getFloat64(i, true));
+                        }
+                    }
+                });
+
+                it('should throw a RangeError when the byteOffset would require to read unavailable bytes', () => {
+                    expect(() => mutliBufferDataView.getFloat64(153, true)).to.throw(RangeError);
+                });
+
+            });
+
+            describe('with the littleEndian flag set to false', () => {
+
+                it('should return the same values as a DataView', () => {
+                    for (let i = 0; i < 153; i += 1) {
+                        const value = mutliBufferDataView.getFloat64(i, false);
+
+                        if (Number.isNaN(value)) {
+                            expect(dataView.getFloat64(i, false)).to.be.NaN;
+                        } else {
+                            expect(value).to.equal(dataView.getFloat64(i));
+                        }
+                    }
+                });
+
+                it('should throw a RangeError when the byteOffset would require to read unavailable bytes', () => {
+                    expect(() => mutliBufferDataView.getFloat64(153, false)).to.throw(RangeError);
+                });
+
+            });
+
+        });
+
         describe('getInt16()', () => {
 
             let buffers;
