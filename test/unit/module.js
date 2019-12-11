@@ -257,6 +257,64 @@ describe('multi-buffer-data-view', () => {
 
         });
 
+        describe('getInt32()', () => {
+
+            let buffers;
+            let dataView;
+            let mutliBufferDataView;
+
+            beforeEach(() => {
+                const int32Array = new Int32Array(Array.from({ length: 20 }, () => Math.floor(Math.random() * (2 ** 32)) - (2 ** 31)));
+
+                buffers = [ int32Array.buffer.slice(0, 5), int32Array.buffer.slice(5) ];
+                dataView = new DataView(int32Array.buffer);
+                mutliBufferDataView = new MutliBufferDataView(buffers);
+            });
+
+            describe('without any littleEndian flag', () => {
+
+                it('should return the same values as a DataView', () => {
+                    for (let i = 0; i < 77; i += 1) {
+                        expect(mutliBufferDataView.getInt32(i)).to.equal(dataView.getInt32(i));
+                    }
+                });
+
+                it('should throw a RangeError when the byteOffset would require to read unavailable bytes', () => {
+                    expect(() => mutliBufferDataView.getInt32(77)).to.throw(RangeError);
+                });
+
+            });
+
+            describe('with the littleEndian flag set to true', () => {
+
+                it('should return the same values as a DataView', () => {
+                    for (let i = 0; i < 77; i += 1) {
+                        expect(mutliBufferDataView.getInt32(i, true)).to.equal(dataView.getInt32(i, true));
+                    }
+                });
+
+                it('should throw a RangeError when the byteOffset would require to read unavailable bytes', () => {
+                    expect(() => mutliBufferDataView.getInt32(77, true)).to.throw(RangeError);
+                });
+
+            });
+
+            describe('with the littleEndian flag set to false', () => {
+
+                it('should return the same values as a DataView', () => {
+                    for (let i = 0; i < 77; i += 1) {
+                        expect(mutliBufferDataView.getInt32(i, false)).to.equal(dataView.getInt32(i, false));
+                    }
+                });
+
+                it('should throw a RangeError when the byteOffset would require to read unavailable bytes', () => {
+                    expect(() => mutliBufferDataView.getInt32(77, false)).to.throw(RangeError);
+                });
+
+            });
+
+        });
+
         describe('getInt8()', () => {
 
             let buffers;
