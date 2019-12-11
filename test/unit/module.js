@@ -213,36 +213,15 @@ describe('multi-buffer-data-view', () => {
                 mutliBufferDataView = new MutliBufferDataView(buffers);
             });
 
-            describe('without any littleEndian flag', () => {
-
-                it('should return the same values as a DataView', () => {
-                    for (let i = 0; i < 20; i += 1) {
-                        expect(mutliBufferDataView.getInt8(i)).to.equal(dataView.getInt8(i));
-                    }
-                });
-
+            it('should return the same values as a DataView', () => {
+                for (let i = 0; i < 20; i += 1) {
+                    expect(mutliBufferDataView.getInt8(i)).to.equal(dataView.getInt8(i));
+                }
             });
 
-            describe('with the littleEndian flag set to true', () => {
-
-                it('should return the same values as a DataView', () => {
-                    for (let i = 0; i < 20; i += 1) {
-                        expect(mutliBufferDataView.getInt8(i, true)).to.equal(dataView.getInt8(i, true));
-                    }
-                });
-
+            it('should throw a RangeError when the byteOffset would require to read unavailable bytes', () => {
+                expect(() => mutliBufferDataView.getInt16(20)).to.throw(RangeError);
             });
-
-            describe('with the littleEndian flag set to false', () => {
-
-                it('should return the same values as a DataView', () => {
-                    for (let i = 0; i < 20; i += 1) {
-                        expect(mutliBufferDataView.getInt8(i, false)).to.equal(dataView.getInt8(i, false));
-                    }
-                });
-
-            });
-
         });
 
         describe('getInt16()', () => {
@@ -317,34 +296,14 @@ describe('multi-buffer-data-view', () => {
                 mutliBufferDataView = new MutliBufferDataView(buffers);
             });
 
-            describe('without any littleEndian flag', () => {
-
-                it('should return the same values as a DataView', () => {
-                    for (let i = 0; i < 20; i += 1) {
-                        expect(mutliBufferDataView.getUint8(i)).to.equal(dataView.getUint8(i));
-                    }
-                });
-
+            it('should return the same values as a DataView', () => {
+                for (let i = 0; i < 20; i += 1) {
+                    expect(mutliBufferDataView.getUint8(i)).to.equal(dataView.getUint8(i));
+                }
             });
 
-            describe('with the littleEndian flag set to true', () => {
-
-                it('should return the same values as a DataView', () => {
-                    for (let i = 0; i < 20; i += 1) {
-                        expect(mutliBufferDataView.getUint8(i, true)).to.equal(dataView.getUint8(i, true));
-                    }
-                });
-
-            });
-
-            describe('with the littleEndian flag set to false', () => {
-
-                it('should return the same values as a DataView', () => {
-                    for (let i = 0; i < 20; i += 1) {
-                        expect(mutliBufferDataView.getUint8(i, false)).to.equal(dataView.getUint8(i, false));
-                    }
-                });
-
+            it('should throw a RangeError when the byteOffset would require to read unavailable bytes', () => {
+                expect(() => mutliBufferDataView.getUint8(20)).to.throw(RangeError);
             });
 
         });
