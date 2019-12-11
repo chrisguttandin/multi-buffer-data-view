@@ -8,6 +8,8 @@ export class MutliBufferDataView {
 
     private _dataViews: DataView[];
 
+    private _internalBuffer: DataView;
+
     constructor (buffers: ArrayBuffer[], byteOffset = 0, byteLength?: number) {
         if (byteOffset < 0 || (byteLength !== undefined && byteLength < 0)) {
             throw new RangeError();
@@ -54,6 +56,7 @@ export class MutliBufferDataView {
         this._byteLength = effectiveByteLength;
         this._byteOffset = truncatedByteOffset;
         this._dataViews = dataViews;
+        this._internalBuffer = new DataView(new ArrayBuffer(8));
     }
 
     get buffers (): ArrayBuffer[] {
@@ -73,15 +76,19 @@ export class MutliBufferDataView {
     // @todo public getFloat64 (byteOffset: number, littleEndian?: boolean): number;
 
     public getInt16 (byteOffset: number, littleEndian?: boolean): number {
-        const uint16 = this.getUint16(byteOffset, littleEndian);
+        this._internalBuffer.setUint8(0, this.getUint8(byteOffset + 0));
+        this._internalBuffer.setUint8(1, this.getUint8(byteOffset + 1));
 
-        return ((uint16 & 0x8000) === 0) ? uint16 : uint16 ^ -0x10000; // tslint:disable-line:no-bitwise
+        return this._internalBuffer.getInt16(0, littleEndian);
     }
 
     public getInt32 (byteOffset: number, littleEndian?: boolean): number {
-        const uint32 = this.getUint32(byteOffset, littleEndian);
+        this._internalBuffer.setUint8(0, this.getUint8(byteOffset + 0));
+        this._internalBuffer.setUint8(1, this.getUint8(byteOffset + 1));
+        this._internalBuffer.setUint8(2, this.getUint8(byteOffset + 2));
+        this._internalBuffer.setUint8(3, this.getUint8(byteOffset + 3));
 
-        return ((uint32 & 0x80000000) === 0) ? uint32 : uint32 ^ -0x100000000; // tslint:disable-line:no-bitwise
+        return this._internalBuffer.getInt32(0, littleEndian);
     }
 
     public getInt8 (byteOffset: number): number {
@@ -91,29 +98,19 @@ export class MutliBufferDataView {
     }
 
     public getUint16 (byteOffset: number, littleEndian?: boolean): number {
-        if (littleEndian === true) {
-            return this.getUint8(byteOffset) + (this.getUint8(byteOffset + 1) << 8); // tslint:disable-line:no-bitwise
-        }
+        this._internalBuffer.setUint8(0, this.getUint8(byteOffset + 0));
+        this._internalBuffer.setUint8(1, this.getUint8(byteOffset + 1));
 
-        return (this.getUint8(byteOffset) << 8) + this.getUint8(byteOffset + 1); // tslint:disable-line:no-bitwise
+        return this._internalBuffer.getUint16(0, littleEndian);
     }
 
     public getUint32 (byteOffset: number, littleEndian?: boolean): number {
-        const value = (littleEndian === true)
-            ? (this.getUint8(byteOffset)
-                + (this.getUint8(byteOffset + 1) << 8) // tslint:disable-line:no-bitwise
-                + (this.getUint8(byteOffset + 2) << 16) // tslint:disable-line:no-bitwise
-                + (this.getUint8(byteOffset + 3) << 24)) // tslint:disable-line:no-bitwise
-            : ((this.getUint8(byteOffset) << 24) // tslint:disable-line:no-bitwise
-                + (this.getUint8(byteOffset + 1) << 16) // tslint:disable-line:no-bitwise
-                + (this.getUint8(byteOffset + 2) << 8) // tslint:disable-line:no-bitwise
-                + this.getUint8(byteOffset + 3));
+        this._internalBuffer.setUint8(0, this.getUint8(byteOffset + 0));
+        this._internalBuffer.setUint8(1, this.getUint8(byteOffset + 1));
+        this._internalBuffer.setUint8(2, this.getUint8(byteOffset + 2));
+        this._internalBuffer.setUint8(3, this.getUint8(byteOffset + 3));
 
-        if (value < 0) {
-            return value + (2 ** 32);
-        }
-
-        return value;
+        return this._internalBuffer.getUint32(0, littleEndian);
     }
 
     public getUint8 (byteOffset: number): number {
@@ -127,7 +124,10 @@ export class MutliBufferDataView {
     // @todo public setFloat64 (byteOffset: number, value: number, littleEndian?: boolean): void;
 
     public setInt16 (byteOffset: number, value: number, littleEndian?: boolean): void {
-        this.setUint16(byteOffset, value, littleEndian);
+        this._internalBuffer.setInt16(0, value, littleEndian);
+
+        this.setUint8(byteOffset, this._internalBuffer.getUint8(0));
+        this.setUint8(byteOffset + 1, this._internalBuffer.getUint8(1));
     }
 
     // @todo public setInt32 (byteOffset: number, value: number, littleEndian?: boolean): void;
@@ -139,13 +139,10 @@ export class MutliBufferDataView {
     }
 
     public setUint16 (byteOffset: number, value: number, littleEndian?: boolean): void {
-        if (littleEndian === true) {
-            this.setUint8(byteOffset, value);
-            this.setUint8(byteOffset + 1, value >> 8); // tslint:disable-line:no-bitwise
-        } else {
-            this.setUint8(byteOffset, value >> 8); // tslint:disable-line:no-bitwise
-            this.setUint8(byteOffset + 1, value);
-        }
+        this._internalBuffer.setUint16(0, value, littleEndian);
+
+        this.setUint8(byteOffset, this._internalBuffer.getUint8(0));
+        this.setUint8(byteOffset + 1, this._internalBuffer.getUint8(1));
     }
 
     // @todo public setUint32 (byteOffset: number, value: number, littleEndian?: boolean): void;
