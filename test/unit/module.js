@@ -247,7 +247,7 @@ describe('multi-buffer-data-view', () => {
                 });
 
                 it('should throw a RangeError when the byteOffset would require to read unavailable bytes', () => {
-                    expect(() => mutliBufferDataView.getInt16(40)).to.throw(RangeError);
+                    expect(() => mutliBufferDataView.getInt16(39)).to.throw(RangeError);
                 });
 
             });
@@ -261,7 +261,7 @@ describe('multi-buffer-data-view', () => {
                 });
 
                 it('should throw a RangeError when the byteOffset would require to read unavailable bytes', () => {
-                    expect(() => mutliBufferDataView.getInt16(40, true)).to.throw(RangeError);
+                    expect(() => mutliBufferDataView.getInt16(39, true)).to.throw(RangeError);
                 });
 
             });
@@ -275,7 +275,7 @@ describe('multi-buffer-data-view', () => {
                 });
 
                 it('should throw a RangeError when the byteOffset would require to read unavailable bytes', () => {
-                    expect(() => mutliBufferDataView.getInt16(40, false)).to.throw(RangeError);
+                    expect(() => mutliBufferDataView.getInt16(39, false)).to.throw(RangeError);
                 });
 
             });
@@ -331,7 +331,7 @@ describe('multi-buffer-data-view', () => {
                 });
 
                 it('should throw a RangeError when the byteOffset would require to read unavailable bytes', () => {
-                    expect(() => mutliBufferDataView.getUint16(40)).to.throw(RangeError);
+                    expect(() => mutliBufferDataView.getUint16(39)).to.throw(RangeError);
                 });
 
             });
@@ -345,7 +345,7 @@ describe('multi-buffer-data-view', () => {
                 });
 
                 it('should throw a RangeError when the byteOffset would require to read unavailable bytes', () => {
-                    expect(() => mutliBufferDataView.getUint16(40, true)).to.throw(RangeError);
+                    expect(() => mutliBufferDataView.getUint16(39, true)).to.throw(RangeError);
                 });
 
             });
@@ -359,7 +359,7 @@ describe('multi-buffer-data-view', () => {
                 });
 
                 it('should throw a RangeError when the byteOffset would require to read unavailable bytes', () => {
-                    expect(() => mutliBufferDataView.getUint16(40, false)).to.throw(RangeError);
+                    expect(() => mutliBufferDataView.getUint16(39, false)).to.throw(RangeError);
                 });
 
             });
