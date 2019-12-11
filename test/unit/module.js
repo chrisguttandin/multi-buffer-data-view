@@ -199,31 +199,6 @@ describe('multi-buffer-data-view', () => {
 
         });
 
-        describe('getInt8()', () => {
-
-            let buffers;
-            let dataView;
-            let mutliBufferDataView;
-
-            beforeEach(() => {
-                const int8Array = new Int8Array(Array.from({ length: 20 }, () => Math.floor(Math.random() * (2 ** 8)) - (2 ** 7)));
-
-                buffers = [ int8Array.buffer.slice(0, 5), int8Array.buffer.slice(5) ];
-                dataView = new DataView(int8Array.buffer);
-                mutliBufferDataView = new MutliBufferDataView(buffers);
-            });
-
-            it('should return the same values as a DataView', () => {
-                for (let i = 0; i < 20; i += 1) {
-                    expect(mutliBufferDataView.getInt8(i)).to.equal(dataView.getInt8(i));
-                }
-            });
-
-            it('should throw a RangeError when the byteOffset would require to read unavailable bytes', () => {
-                expect(() => mutliBufferDataView.getInt16(20)).to.throw(RangeError);
-            });
-        });
-
         describe('getInt16()', () => {
 
             let buffers;
@@ -282,30 +257,29 @@ describe('multi-buffer-data-view', () => {
 
         });
 
-        describe('getUint8()', () => {
+        describe('getInt8()', () => {
 
             let buffers;
             let dataView;
             let mutliBufferDataView;
 
             beforeEach(() => {
-                const uint8Array = new Uint8Array(Array.from({ length: 20 }, () => Math.floor(Math.random() * (2 ** 8))));
+                const int8Array = new Int8Array(Array.from({ length: 20 }, () => Math.floor(Math.random() * (2 ** 8)) - (2 ** 7)));
 
-                buffers = [ uint8Array.buffer.slice(0, 5), uint8Array.buffer.slice(5) ];
-                dataView = new DataView(uint8Array.buffer);
+                buffers = [ int8Array.buffer.slice(0, 5), int8Array.buffer.slice(5) ];
+                dataView = new DataView(int8Array.buffer);
                 mutliBufferDataView = new MutliBufferDataView(buffers);
             });
 
             it('should return the same values as a DataView', () => {
                 for (let i = 0; i < 20; i += 1) {
-                    expect(mutliBufferDataView.getUint8(i)).to.equal(dataView.getUint8(i));
+                    expect(mutliBufferDataView.getInt8(i)).to.equal(dataView.getInt8(i));
                 }
             });
 
             it('should throw a RangeError when the byteOffset would require to read unavailable bytes', () => {
-                expect(() => mutliBufferDataView.getUint8(20)).to.throw(RangeError);
+                expect(() => mutliBufferDataView.getInt16(20)).to.throw(RangeError);
             });
-
         });
 
         describe('getUint16()', () => {
@@ -366,28 +340,28 @@ describe('multi-buffer-data-view', () => {
 
         });
 
-        describe('setInt8()', () => {
+        describe('getUint8()', () => {
 
             let buffers;
+            let dataView;
             let mutliBufferDataView;
-            let values;
 
             beforeEach(() => {
-                buffers = [ new ArrayBuffer(5), new ArrayBuffer(15) ];
+                const uint8Array = new Uint8Array(Array.from({ length: 20 }, () => Math.floor(Math.random() * (2 ** 8))));
+
+                buffers = [ uint8Array.buffer.slice(0, 5), uint8Array.buffer.slice(5) ];
+                dataView = new DataView(uint8Array.buffer);
                 mutliBufferDataView = new MutliBufferDataView(buffers);
-                values = Array.from({ length: 20 }, () => Math.floor(Math.random() * (2 ** 8)) - (2 ** 7));
             });
 
-            it('should write the same values as if using a DataView', () => {
+            it('should return the same values as a DataView', () => {
                 for (let i = 0; i < 20; i += 1) {
-                    mutliBufferDataView.setInt8(i, values[i]);
+                    expect(mutliBufferDataView.getUint8(i)).to.equal(dataView.getUint8(i));
                 }
+            });
 
-                const dataView = combineArrayBuffers(buffers);
-
-                for (let i = 0; i < 20; i += 1) {
-                    expect(dataView.getInt8(i)).to.equal(values[i]);
-                }
+            it('should throw a RangeError when the byteOffset would require to read unavailable bytes', () => {
+                expect(() => mutliBufferDataView.getUint8(20)).to.throw(RangeError);
             });
 
         });
@@ -454,7 +428,7 @@ describe('multi-buffer-data-view', () => {
 
         });
 
-        describe('setUint8()', () => {
+        describe('setInt8()', () => {
 
             let buffers;
             let mutliBufferDataView;
@@ -463,18 +437,18 @@ describe('multi-buffer-data-view', () => {
             beforeEach(() => {
                 buffers = [ new ArrayBuffer(5), new ArrayBuffer(15) ];
                 mutliBufferDataView = new MutliBufferDataView(buffers);
-                values = Array.from({ length: 20 }, () => Math.floor(Math.random() * (2 ** 8)));
+                values = Array.from({ length: 20 }, () => Math.floor(Math.random() * (2 ** 8)) - (2 ** 7));
             });
 
             it('should write the same values as if using a DataView', () => {
                 for (let i = 0; i < 20; i += 1) {
-                    mutliBufferDataView.setUint8(i, values[i]);
+                    mutliBufferDataView.setInt8(i, values[i]);
                 }
 
                 const dataView = combineArrayBuffers(buffers);
 
                 for (let i = 0; i < 20; i += 1) {
-                    expect(dataView.getUint8(i)).to.equal(values[i]);
+                    expect(dataView.getInt8(i)).to.equal(values[i]);
                 }
             });
 
@@ -538,6 +512,32 @@ describe('multi-buffer-data-view', () => {
                     }
                 });
 
+            });
+
+        });
+
+        describe('setUint8()', () => {
+
+            let buffers;
+            let mutliBufferDataView;
+            let values;
+
+            beforeEach(() => {
+                buffers = [ new ArrayBuffer(5), new ArrayBuffer(15) ];
+                mutliBufferDataView = new MutliBufferDataView(buffers);
+                values = Array.from({ length: 20 }, () => Math.floor(Math.random() * (2 ** 8)));
+            });
+
+            it('should write the same values as if using a DataView', () => {
+                for (let i = 0; i < 20; i += 1) {
+                    mutliBufferDataView.setUint8(i, values[i]);
+                }
+
+                const dataView = combineArrayBuffers(buffers);
+
+                for (let i = 0; i < 20; i += 1) {
+                    expect(dataView.getUint8(i)).to.equal(values[i]);
+                }
             });
 
         });
