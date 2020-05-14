@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.9.6",
-    "tslib": "^1.11.2"
+    "tslib": "^2.0.0"
   },
   "description": "A wrapper around the native DataView which can handle multiple ArrayBuffers.",
   "devDependencies": {
