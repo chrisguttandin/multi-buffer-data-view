@@ -1,5 +1,4 @@
 export class MultiBufferDataView implements Omit<DataView, 'buffer' | 'getBigInt64' | 'getBigUint64' | 'setBigInt64' | 'setBigUint64'> {
-
     private _buffers: ArrayBuffer[];
 
     private _byteLength: number;
@@ -10,20 +9,20 @@ export class MultiBufferDataView implements Omit<DataView, 'buffer' | 'getBigInt
 
     private _internalBuffer: DataView;
 
-    constructor (buffers: ArrayBuffer[], byteOffset = 0, byteLength?: number) {
+    constructor(buffers: ArrayBuffer[], byteOffset = 0, byteLength?: number) {
         if (byteOffset < 0 || (byteLength !== undefined && byteLength < 0)) {
             throw new RangeError();
         }
 
         const availableBytes = buffers.reduce((length, buffer) => length + buffer.byteLength, 0);
 
-        if (byteOffset > availableBytes || (byteLength !== undefined && (byteOffset + byteLength) > availableBytes)) {
+        if (byteOffset > availableBytes || (byteLength !== undefined && byteOffset + byteLength > availableBytes)) {
             throw new RangeError();
         }
 
-        const dataViews = [ ];
-        const effectiveByteLength = (byteLength === undefined) ? availableBytes - byteOffset : byteLength;
-        const truncatedBuffers = [ ];
+        const dataViews = [];
+        const effectiveByteLength = byteLength === undefined ? availableBytes - byteOffset : byteLength;
+        const truncatedBuffers = [];
 
         let consumedByteLength = 0;
         let truncatedByteOffset = byteOffset;
@@ -33,7 +32,7 @@ export class MultiBufferDataView implements Omit<DataView, 'buffer' | 'getBigInt
                 if (buffer.byteLength > truncatedByteOffset) {
                     consumedByteLength = buffer.byteLength - truncatedByteOffset;
 
-                    const byteLengthOfDataView = (consumedByteLength > effectiveByteLength) ? effectiveByteLength : consumedByteLength;
+                    const byteLengthOfDataView = consumedByteLength > effectiveByteLength ? effectiveByteLength : consumedByteLength;
 
                     dataViews.push(new DataView(buffer, truncatedByteOffset, byteLengthOfDataView));
                     truncatedBuffers.push(buffer);
@@ -43,9 +42,10 @@ export class MultiBufferDataView implements Omit<DataView, 'buffer' | 'getBigInt
             } else if (truncatedBuffers.length > 0 && consumedByteLength < effectiveByteLength) {
                 consumedByteLength += buffer.byteLength;
 
-                const byteLengthOfDataView = (consumedByteLength > effectiveByteLength)
-                    ? buffer.byteLength - consumedByteLength + effectiveByteLength
-                    : buffer.byteLength;
+                const byteLengthOfDataView =
+                    consumedByteLength > effectiveByteLength
+                        ? buffer.byteLength - consumedByteLength + effectiveByteLength
+                        : buffer.byteLength;
 
                 dataViews.push(new DataView(buffer, 0, byteLengthOfDataView));
                 truncatedBuffers.push(buffer);
@@ -59,19 +59,19 @@ export class MultiBufferDataView implements Omit<DataView, 'buffer' | 'getBigInt
         this._internalBuffer = new DataView(new ArrayBuffer(8));
     }
 
-    get buffers (): ArrayBuffer[] {
+    get buffers(): ArrayBuffer[] {
         return this._buffers;
     }
 
-    get byteLength (): number {
+    get byteLength(): number {
         return this._byteLength;
     }
 
-    get byteOffset (): number {
+    get byteOffset(): number {
         return this._byteOffset;
     }
 
-    public getFloat32 (byteOffset: number, littleEndian?: boolean): number {
+    public getFloat32(byteOffset: number, littleEndian?: boolean): number {
         this._internalBuffer.setUint8(0, this.getUint8(byteOffset + 0));
         this._internalBuffer.setUint8(1, this.getUint8(byteOffset + 1));
         this._internalBuffer.setUint8(2, this.getUint8(byteOffset + 2));
@@ -80,7 +80,7 @@ export class MultiBufferDataView implements Omit<DataView, 'buffer' | 'getBigInt
         return this._internalBuffer.getFloat32(0, littleEndian);
     }
 
-    public getFloat64 (byteOffset: number, littleEndian?: boolean): number {
+    public getFloat64(byteOffset: number, littleEndian?: boolean): number {
         this._internalBuffer.setUint8(0, this.getUint8(byteOffset + 0));
         this._internalBuffer.setUint8(1, this.getUint8(byteOffset + 1));
         this._internalBuffer.setUint8(2, this.getUint8(byteOffset + 2));
@@ -93,14 +93,14 @@ export class MultiBufferDataView implements Omit<DataView, 'buffer' | 'getBigInt
         return this._internalBuffer.getFloat64(0, littleEndian);
     }
 
-    public getInt16 (byteOffset: number, littleEndian?: boolean): number {
+    public getInt16(byteOffset: number, littleEndian?: boolean): number {
         this._internalBuffer.setUint8(0, this.getUint8(byteOffset + 0));
         this._internalBuffer.setUint8(1, this.getUint8(byteOffset + 1));
 
         return this._internalBuffer.getInt16(0, littleEndian);
     }
 
-    public getInt32 (byteOffset: number, littleEndian?: boolean): number {
+    public getInt32(byteOffset: number, littleEndian?: boolean): number {
         this._internalBuffer.setUint8(0, this.getUint8(byteOffset + 0));
         this._internalBuffer.setUint8(1, this.getUint8(byteOffset + 1));
         this._internalBuffer.setUint8(2, this.getUint8(byteOffset + 2));
@@ -109,20 +109,20 @@ export class MultiBufferDataView implements Omit<DataView, 'buffer' | 'getBigInt
         return this._internalBuffer.getInt32(0, littleEndian);
     }
 
-    public getInt8 (byteOffset: number): number {
-        const [ dataView, byteOffsetOfDataView ] = this._findDataViewWithOffset(byteOffset);
+    public getInt8(byteOffset: number): number {
+        const [dataView, byteOffsetOfDataView] = this._findDataViewWithOffset(byteOffset);
 
         return dataView.getInt8(byteOffset - byteOffsetOfDataView);
     }
 
-    public getUint16 (byteOffset: number, littleEndian?: boolean): number {
+    public getUint16(byteOffset: number, littleEndian?: boolean): number {
         this._internalBuffer.setUint8(0, this.getUint8(byteOffset + 0));
         this._internalBuffer.setUint8(1, this.getUint8(byteOffset + 1));
 
         return this._internalBuffer.getUint16(0, littleEndian);
     }
 
-    public getUint32 (byteOffset: number, littleEndian?: boolean): number {
+    public getUint32(byteOffset: number, littleEndian?: boolean): number {
         this._internalBuffer.setUint8(0, this.getUint8(byteOffset + 0));
         this._internalBuffer.setUint8(1, this.getUint8(byteOffset + 1));
         this._internalBuffer.setUint8(2, this.getUint8(byteOffset + 2));
@@ -131,13 +131,13 @@ export class MultiBufferDataView implements Omit<DataView, 'buffer' | 'getBigInt
         return this._internalBuffer.getUint32(0, littleEndian);
     }
 
-    public getUint8 (byteOffset: number): number {
-        const [ dataView, byteOffsetOfDataView ] = this._findDataViewWithOffset(byteOffset);
+    public getUint8(byteOffset: number): number {
+        const [dataView, byteOffsetOfDataView] = this._findDataViewWithOffset(byteOffset);
 
         return dataView.getUint8(byteOffset - byteOffsetOfDataView);
     }
 
-    public setFloat32 (byteOffset: number, value: number, littleEndian?: boolean): void {
+    public setFloat32(byteOffset: number, value: number, littleEndian?: boolean): void {
         this._internalBuffer.setFloat32(0, value, littleEndian);
 
         this.setUint8(byteOffset, this._internalBuffer.getUint8(0));
@@ -146,7 +146,7 @@ export class MultiBufferDataView implements Omit<DataView, 'buffer' | 'getBigInt
         this.setUint8(byteOffset + 3, this._internalBuffer.getUint8(3));
     }
 
-    public setFloat64 (byteOffset: number, value: number, littleEndian?: boolean): void {
+    public setFloat64(byteOffset: number, value: number, littleEndian?: boolean): void {
         this._internalBuffer.setFloat64(0, value, littleEndian);
 
         this.setUint8(byteOffset, this._internalBuffer.getUint8(0));
@@ -159,14 +159,14 @@ export class MultiBufferDataView implements Omit<DataView, 'buffer' | 'getBigInt
         this.setUint8(byteOffset + 7, this._internalBuffer.getUint8(7));
     }
 
-    public setInt16 (byteOffset: number, value: number, littleEndian?: boolean): void {
+    public setInt16(byteOffset: number, value: number, littleEndian?: boolean): void {
         this._internalBuffer.setInt16(0, value, littleEndian);
 
         this.setUint8(byteOffset, this._internalBuffer.getUint8(0));
         this.setUint8(byteOffset + 1, this._internalBuffer.getUint8(1));
     }
 
-    public setInt32 (byteOffset: number, value: number, littleEndian?: boolean): void {
+    public setInt32(byteOffset: number, value: number, littleEndian?: boolean): void {
         this._internalBuffer.setInt32(0, value, littleEndian);
 
         this.setUint8(byteOffset, this._internalBuffer.getUint8(0));
@@ -175,20 +175,20 @@ export class MultiBufferDataView implements Omit<DataView, 'buffer' | 'getBigInt
         this.setUint8(byteOffset + 3, this._internalBuffer.getUint8(3));
     }
 
-    public setInt8 (byteOffset: number, value: number): void {
-        const [ dataView, byteOffsetOfDataView ] = this._findDataViewWithOffset(byteOffset);
+    public setInt8(byteOffset: number, value: number): void {
+        const [dataView, byteOffsetOfDataView] = this._findDataViewWithOffset(byteOffset);
 
         dataView.setInt8(byteOffset - byteOffsetOfDataView, value);
     }
 
-    public setUint16 (byteOffset: number, value: number, littleEndian?: boolean): void {
+    public setUint16(byteOffset: number, value: number, littleEndian?: boolean): void {
         this._internalBuffer.setUint16(0, value, littleEndian);
 
         this.setUint8(byteOffset, this._internalBuffer.getUint8(0));
         this.setUint8(byteOffset + 1, this._internalBuffer.getUint8(1));
     }
 
-    public setUint32 (byteOffset: number, value: number, littleEndian?: boolean): void {
+    public setUint32(byteOffset: number, value: number, littleEndian?: boolean): void {
         this._internalBuffer.setUint32(0, value, littleEndian);
 
         this.setUint8(byteOffset, this._internalBuffer.getUint8(0));
@@ -197,20 +197,20 @@ export class MultiBufferDataView implements Omit<DataView, 'buffer' | 'getBigInt
         this.setUint8(byteOffset + 3, this._internalBuffer.getUint8(3));
     }
 
-    public setUint8 (byteOffset: number, value: number): void {
-        const [ dataView, byteOffsetOfDataView ] = this._findDataViewWithOffset(byteOffset);
+    public setUint8(byteOffset: number, value: number): void {
+        const [dataView, byteOffsetOfDataView] = this._findDataViewWithOffset(byteOffset);
 
         dataView.setUint8(byteOffset - byteOffsetOfDataView, value);
     }
 
-    private _findDataViewWithOffset (byteOffset: number): [ DataView, number ] {
+    private _findDataViewWithOffset(byteOffset: number): [DataView, number] {
         let byteOffsetOfDataView = 0;
 
         for (const dataView of this._dataViews) {
             const byteOffsetOfNextDataView = byteOffsetOfDataView + dataView.byteLength;
 
             if (byteOffset >= byteOffsetOfDataView && byteOffset < byteOffsetOfNextDataView) {
-                return [ dataView, byteOffsetOfDataView ];
+                return [dataView, byteOffsetOfDataView];
             }
 
             byteOffsetOfDataView = byteOffsetOfNextDataView;
@@ -218,5 +218,4 @@ export class MultiBufferDataView implements Omit<DataView, 'buffer' | 'getBigInt
 
         throw new RangeError();
     }
-
 }
