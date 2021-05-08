@@ -39,7 +39,7 @@ export class MultiBufferDataView implements Omit<DataView, 'buffer' | 'getBigInt
                 } else {
                     truncatedByteOffset -= buffer.byteLength;
                 }
-            } else if (truncatedBuffers.length > 0 && consumedByteLength < effectiveByteLength) {
+            } else if (consumedByteLength < effectiveByteLength) {
                 consumedByteLength += buffer.byteLength;
 
                 const byteLengthOfDataView =
