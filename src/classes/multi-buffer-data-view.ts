@@ -1,4 +1,6 @@
-export class MultiBufferDataView implements Omit<DataView, 'buffer' | 'getBigInt64' | 'getBigUint64' | 'setBigInt64' | 'setBigUint64'> {
+export class MultiBufferDataView
+    implements Omit<DataView, 'buffer' | 'getBigInt64' | 'getBigUint64' | 'setBigInt64' | 'setBigUint64' | symbol>
+{
     private _buffers: ArrayBuffer[];
 
     private _byteLength: number;
