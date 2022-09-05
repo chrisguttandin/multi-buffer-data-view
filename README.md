@@ -2,7 +2,6 @@
 
 **A wrapper around the native DataView which can handle multiple ArrayBuffers.**
 
-[![dependencies](https://img.shields.io/david/chrisguttandin/multi-buffer-data-view.svg?style=flat-square)](https://github.com/chrisguttandin/multi-buffer-data-view/network/dependencies)
 [![version](https://img.shields.io/npm/v/multi-buffer-data-view.svg?style=flat-square)](https://www.npmjs.com/package/multi-buffer-data-view)
 
 This module provides a wrapper around the native DataView. But instead of supporting only one ArrayBuffer as the backing memory the `MultiBufferDataView` exported by this module can operate across multiple ArrayBuffers.
