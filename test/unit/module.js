@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { MultiBufferDataView } from '../../src/module';
 import { combineArrayBuffers } from '../helpers/combine-array-buffers';
 
